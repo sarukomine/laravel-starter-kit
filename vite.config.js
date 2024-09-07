@@ -23,16 +23,16 @@ export default ({ mode }) => {
         ],
     }
 
-    // if (process.env.VITE_APP_ENV === 'local') {
-    //     config.server = {
-    //         https: {
-    //             key: readFileSync(process.env.VITE_HTTPS_KEY),
-    //             cert: readFileSync(process.env.VITE_HTTPS_CERT),
-    //         },
-    //         host: process.env.VITE_APP_DOMAIN,
-    //         hmr: { host: process.env.VITE_APP_DOMAIN },
-    //     }
-    // }
+    if (process.env.VITE_APP_ENV === 'local') {
+        config.server = {
+            https: {
+                key: readFileSync(process.env.VITE_HTTPS_KEY),
+                cert: readFileSync(process.env.VITE_HTTPS_CERT),
+            },
+            host: process.env.VITE_APP_DOMAIN,
+            hmr: { host: process.env.VITE_APP_DOMAIN },
+        }
+    }
 
     return defineConfig(config)
 }
