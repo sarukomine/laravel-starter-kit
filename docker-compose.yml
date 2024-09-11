@@ -1,32 +1,11 @@
 services:
-    nginx:
-        image: 'nginx:latest'
-        ports:
-            - '${HTTP_PORT:-8000}:80'
-            - '${SSL_PORT:-443}:443'
-            - '${VITE_PORT:-5173}:5173'
-        environment:
-            - SSL_PORT=${SSL_PORT:-443}
-            - APP_SERVICE=${APP_SERVICE:-starter-kit.test}
-            - SERVER_NAME=${SERVER_NAME:-starter-kit}
-            - SSL_DOMAIN=${SSL_DOMAIN:-*.starter-kit.test}
-            - SSL_ALT_NAME=${SSL_ALT_NAME:-DNS:localhost,DNS:starter-kit.test,DNS:www.starter-kit.test}
-            - VITE_PORT=${VITE_PORT:-5173}
-        volumes:
-            - './nginx/certs:/etc/nginx/certs'
-            - './vendor/ryoluo/sail-ssl/nginx/templates:/etc/nginx/templates'
-            - './vendor/ryoluo/sail-ssl/nginx/generate-ssl-cert.sh:/docker-entrypoint.d/99-generate-ssl-cert.sh'
-        depends_on:
-            - ${APP_SERVICE:-starter-kit.test}
-        networks:
-            - sail
     starter-kit.test:
         build:
-            context: ./vendor/laravel/sail/runtimes/8.3
-            dockerfile: Dockerfile
+            context: './vendor/laravel/sail/runtimes/8.3'
+            dockerfile: 'Dockerfile'
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: sail-8.3/app
+        image: 'sail-8.3/app'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -40,9 +19,30 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - sail
+            - 'sail'
         depends_on:
-            - mysql
+            - 'mysql'
+    nginx:
+        image: 'nginx:latest'
+        ports:
+            - '${HTTP_PORT:-8000}:80'
+            - '${HTTPS_PORT:-443}:443'
+            - '${VITE_PORT:-5173}:5173'
+        environment:
+            - 'APP_SERVICE=${APP_SERVICE:-starter-kit.test}'
+            - 'SERVER_NAME=${SERVER_NAME:-starter-kit}'
+            - 'SSL_DOMAIN=${SSL_DOMAIN:-*.starter-kit.test}'
+            - 'SSL_ALT_NAME=${SSL_ALT_NAME:-DNS:localhost,DNS:starter-kit.test,DNS:www.starter-kit.test}'
+            - 'HTTPS_PORT=${HTTPS_PORT:-443}'
+            - 'VITE_PORT=${VITE_PORT:-5173}'
+        volumes:
+            - './nginx/certs:/etc/nginx/certs'
+            - './nginx/templates:/etc/nginx/templates'
+            - './nginx/generate-ssl-cert.sh:/docker-entrypoint.d/99-generate-ssl-cert.sh'
+        depends_on:
+            - '${APP_SERVICE:-starter-kit.test}'
+        networks:
+            - 'sail'
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -58,18 +58,18 @@ services:
             - 'sail-mysql:/var/lib/mysql'
             - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
-            - sail
+            - 'sail'
         healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - '-p${DB_PASSWORD}'
             retries: 3
-            timeout: 5s
+            timeout: '5s'
+            test:
+                - 'CMD'
+                - 'mysqladmin'
+                - 'ping'
+                - '-p${DB_PASSWORD}'
 networks:
     sail:
-        driver: bridge
+        driver: 'bridge'
 volumes:
     sail-mysql:
-        driver: local
+        driver: 'local'
