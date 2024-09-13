@@ -1,18 +1,16 @@
 server {
-    listen  80  default_server;
-    server_name ${SERVER_NAME};
+    listen 80 default_server;
+    server_name ${APP_SERVICE};
 
     return  301 https://$host:${HTTPS_PORT}$request_uri;
 }
 
 server {
-    listen  443 ssl default_server;
-    server_name ${SERVER_NAME};
+    listen 443 ssl default_server;
+    server_name ${APP_SERVICE};
 
-    # Self signed certificates
-    # Don't use them in a production server!
-    ssl_certificate     /etc/nginx/certs/server.pem;
-    ssl_certificate_key /etc/nginx/certs/server.key;
+    ssl_certificate /etc/nginx/certs/${APP_SERVICE}.pem;
+    ssl_certificate_key /etc/nginx/certs/${APP_SERVICE}.key;
 
     location / {
         proxy_set_header X-Real-IP $remote_addr;

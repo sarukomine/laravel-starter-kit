@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ME=$(basename $0)
-KEY=/etc/nginx/certs/server.key
-CERT=/etc/nginx/certs/server.pem
+KEY="/etc/nginx/certs/$APP_SERVICE.key"
+CERT="/etc/nginx/certs/$APP_SERVICE.pem"
 CN=$SSL_DOMAIN
 SAN=$SSL_ALT_NAME
 
