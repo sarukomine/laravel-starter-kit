@@ -6,18 +6,18 @@ import { route } from 'ziggy.js'
 createInertiaApp({
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
-        const Ziggy = { 
+        const Ziggy = {
             // Pull the Ziggy config off of the props.
             ...props.initialPage.props.ziggy,
 
             // Build the location, since there is no window.location in Node.
-            location: new URL(props.initialPage.props.ziggy.url)
+            location: new URL(props.initialPage.props.ziggy.url),
         }
 
         const app = createSSRApp({ render: () => h(App, props) })
 
         app.use(plugin)
-        app.mixin({ 
+        app.mixin({
             methods: {
                 route: (name, params, absolute, config = Ziggy) => route(name, params, absolute, config),
             },

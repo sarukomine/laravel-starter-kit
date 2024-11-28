@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
